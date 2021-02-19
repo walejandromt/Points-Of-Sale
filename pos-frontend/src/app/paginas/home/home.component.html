@@ -1,0 +1,244 @@
+<div class="container">
+  <div class="row sticky-top">
+    <nav class="navbar navbar-light bg-light">
+      <form class="container-fluid">
+        <div class="input-group">
+          <span class="input-group-text" id="basic-addon1"><i class="fas fa-qrcode"></i></span>
+          <input (keyup.enter)="agregar()" [(ngModel)]="claveSelected" name="clave" class="form-control" list="datalistOptions" placeholder="Codigo de Barra" aria-label="Codigo de Barra">
+          <datalist id="datalistOptions">
+            <option *ngFor="let p of productos" (click)="agregarProducto(p)" text="{{p.clave}}" value="{{p.clave}}">
+          </datalist>
+        </div>
+      </form>
+    </nav>
+  </div>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="container-fluid bg-light">
+        <div class="row row-cols-1 row-cols-md-3 g-4 flex-row">
+          <div class="col mb-1" *ngFor="let p of productos">
+            <div (click)="agregarProducto(p)" class="card h-100">
+              <div *ngIf="p.nombreImagen == null || p.nombreImagen == ''; then thenShowSvg else elseShowImg"></div>
+              <ng-template #thenShowSvg><svg class="bd-placeholder-img card-img-top" width="100%" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="40%" y="50%" fill="#dee2e6" dy=".3em"></text></svg></ng-template>
+              <ng-template #elseShowImg><img src="..." class="card-img-top" alt="..."></ng-template>
+              <div class="card-img-overlay">
+                <h5 class="card-title">{{p.nombre}}</h5>
+                <p class="card-subtitle text-muted">${{p.precio}}</p>
+                <p class="card-text">{{(p.descripcion.length>24)? (p.descripcion | slice:0:24)+'...':(p.descripcion)}}</p>
+                <p class="card-text text-muted">{{p.clave}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body bg-light">
+
+          <ul class="list-group">
+            <li *ngFor="let car of carrito" class="list-group-item d-flex justify-content-between align-items-center">
+              <button (click)="eliminarProducto(car)" type="button" class="btn-close"></button>
+
+              <p>{{car.producto.nombre}} <span class="col text-end fw-bolder"> ${{car.producto.precio}}</span></p>
+
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <span (click)="restarProducto(car)" type="button" class="badge rounded-pill"><i class="fas fa-minus text-dark"></i></span>
+                <span (click)="actualizarCantidad(car)" role="button" data-bs-toggle="modal" data-bs-target="#actualizarCantidad" class="badge bg-primary rounded-pill">{{car.cantidad}}</span>
+                <span (click)="sumarProducto(car)" type="button" class="badge rounded-pill"><i class="fas fa-plus text-dark"></i></span>
+              </div>
+            </li>
+            <li *ngFor="let car of carritoAdicional" class="list-group-item d-flex justify-content-between align-items-center">
+              <button (click)="eliminarProductoAdicional(car)" type="button" class="btn-close"></button>
+
+              <p>{{car.nombre}} <span class="col text-end fw-bolder"> ${{car.precio}}</span></p>
+
+              <div class="btn-group" role="group">
+                <span (click)="restarProductoAdicional(car)" type="button" class="badge rounded-pill"><i class="fas fa-minus text-dark"></i></span>
+                <span (click)="actualizarCantidadAdicional(car)" role="button" data-bs-toggle="modal" data-bs-target="#actualizarCantidad" class="badge bg-primary rounded-pill">{{car.cantidad}}</span>
+                <span (click)="sumarProductoAdicional(car)" type="button" class="badge rounded-pill"><i class="fas fa-plus text-dark"></i></span>
+              </div>
+            </li>
+            <li class="list-group-item row">
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarProductoAdicionalModal" type="button">
+                <i class="fas fa-plus"></i> Agregar
+              </button>
+            </li>
+          </ul>
+
+          <div class="accordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#detallePago" aria-expanded="true" aria-controls="detallePago">
+                  <i class="fas fa-info-circle"></i> Detalle
+                </button>
+              </h2>
+              <div id="detallePago" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                  <div class="row bg-light">
+                    <span class="col text-start fs-6">SubTotal:</span>
+                    <span class="col text-end fs-6 fw-bolder">$ {{ventaTotal.subTotal}}</span>
+                  </div>
+                  <div class="row">
+                    <span class="col text-start fs-6">IVA:</span>
+                    <span class="col text-end fs-6 fw-bolder">$ {{ventaTotal.iva}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body bg-primary">
+              <div class="row text-white">
+                <span class="col text-start fs-5">Total:</span>
+                <span class="col text-end fs-4 fw-bolder">$ {{ventaTotal.total}}</span>
+              </div>
+              <div class="row">
+                <button [disabled]="ventaTotal.total == 0" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#venderModal" type="button">
+                  <i class="fas fa-shopping-cart"></i> Vender
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="venderModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cambio</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-body bg-primary text-white">
+            <div class="row">
+              <span class="col text-start fs-5">Total:</span>
+              <span class="col text-end fs-4 fw-bolder">$ {{ventaTotal.total}}</span>
+            </div>
+          </div>
+        </div>
+        <form class="needs-validation" novalidate>
+          <div class="form-group">
+            <label for="tipoPago">Tipo Pago</label>
+            <select [(ngModel)]="ventaTotal.tipo" [ngClass]="{'is-invalid': ventaTotal.tipo == null || ventaTotal.tipo == ''}" class="form-control" name="tipoPago" required>
+              <option selected disabled value="">Choose Option...</option>
+              <option *ngFor="let tp of tiposPago" value="{{tp}}" text="{{tp}}"></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pagaCon">Paga con:</label>
+            <input (change)="calcularCambio()" [(ngModel)]="ventaTotal.pagaCon" name="pagaCon" class="form-control" type="number" required />
+          </div>
+          <div class="form-group">
+            <label for="cambio">Cambio:</label>
+            <input [(ngModel)]="cambio" name="cambio" class="form-control" type="number" disabled />
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+        <button (click)="guardarVenta()" [disabled]="ventaTotal.tipo == null || ventaTotal.tipo == ''" [attr.data-bs-dismiss]="ventaTotal.tipo != null && ventaTotal.tipo != '' ? 'modal' : null" [attr.data-bs-toggle]="ventaTotal.tipo != null && ventaTotal.tipo != '' ? 'modal' : null" class="btn btn-primary" data-bs-target="#completarVentaModal" type="button"><i class="fas fa-check-circle"></i> Completar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="completarVentaModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Listo</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" role="alert">
+          <h4 class="alert-heading">Venta completada!</h4>
+          <p>Ventas totales : $ {{constantesService.ventasHoy}}.</p>
+          <hr>
+          <p class="mb-0">Cantidad de ventas ayer: $ {{constantesService.ventasAyer}}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="agregarProductoAdicionalModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-store"></i> Producto Adicional</h5>
+        <button (click)="nombreProductoAdicional.value = ''; precioProductoAdicional.value = ''" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="needs-validation" novalidate>
+
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input #nombreProductoAdicional name="nombre" class="form-control" type="text" required maxlength="20" />
+          </div>
+
+          <div class="form-group">
+            <label for="precio">Precio</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input #precioProductoAdicional name="precio" class="form-control" type="number" required maxlength="10" />
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button (click)="nombreProductoAdicional.value = ''; precioProductoAdicional.value = ''" class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+        <button (click)="agregarProductoAdicional(nombreProductoAdicional.value, precioProductoAdicional.value); nombreProductoAdicional.value = ''; precioProductoAdicional.value = ''" class="btn btn-primary" data-bs-dismiss="modal" type="button"><i class="fas fa-plus"></i> Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="actualizarCantidad" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-store"></i> Cantidad</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+      </div>
+      <div class="modal-body">
+
+        <div class="needs-validation" novalidate>
+
+          <div class="form-group">
+            <label for="precio">Cantidad</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input [(ngModel)]="cantidad" name="cantidad" class="form-control" type="number" required maxlength="10" />
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+        <button (click)="actualizarCantidadCarrito();" class="btn btn-primary" data-bs-dismiss="modal" type="button"><i class="fas fa-plus"></i> Actualizar</button>
+      </div>
+    </div>
+  </div>
+</div>

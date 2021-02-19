@@ -1,0 +1,140 @@
+<div class="container p-3">
+  <div class="row sticky-top">
+    <nav class="navbar navbar-light bg-light">
+      <form class="container-fluid">
+        <div class="input-group">
+          <span class="input-group-text" id="basic-addon1"><i class="fas fa-qrcode"></i></span>
+          <input (keyup.enter)="agregar()" [(ngModel)]="claveSelected" name="clave" class="form-control" list="datalistOptions" placeholder="Codigo de Barra" aria-label="Codigo de Barra">
+          <!--button (click)="agregar()" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#modalProducto" type="button"><i class="fas fa-search"></i> Buscar</!--button-->
+          <datalist id="datalistOptions">
+            <option *ngFor="let p of productos" value="{{p.clave}}">
+          </datalist>
+        </div>
+      </form>
+    </nav>
+  </div>
+
+  <div class="card">
+    <div class="card-header bg-dark text-white">
+      <i class="fas fa-store"></i> Productos
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Lista de productos</h5>
+      <div class="card-body">
+        <div class="row">
+          <div *ngIf="productos.length > 0" class="col text-end">
+            <button (click)="limpiarProducto()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProducto" type="button">
+              <i class="fas fa-plus-circle"></i> Agregar
+            </button>
+          </div>
+        </div>
+        <div class="container overflow-auto">
+          <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col" *ngFor="let p of productos">
+              <div class="card h-100">
+                <div *ngIf="p.nombreImagen == null || p.nombreImagen == ''; then thenShowSvg else elseShowImg"></div>
+                <ng-template #thenShowSvg><svg class="bd-placeholder-img card-img-top" width="100%" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="40%" y="50%" fill="#dee2e6" dy=".3em">Imagen</text></svg></ng-template>
+                <ng-template #elseShowImg><img src="..." class="card-img-top" alt="..."></ng-template>
+
+                <div class="card-body">
+                  <h5 class="card-title" [ngClass]="{'text-danger': p.stock <= 5}">{{p.nombre}}</h5>
+                  <p class="card-subtitle"><span class="fw-bold">Precio:</span> ${{p.precio}}</p>
+                  <p class="card-subtitle" [ngClass]="{'text-danger': p.stock <= 5}"><span class="fw-bold">Almacen:</span> {{p.stock}}</p>
+                  <p class="card-text">{{p.descripcion}}</p>
+                </div>
+                <div class="card-footer">
+                  <small class="text-muted">{{p.clave}}</small>
+                  <div class="col text-end">
+                    <button (click)="setProducto(p)" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#modalProducto" type="button"><i class="fas fa-sliders-h"></i> Modificar</button>
+                    <button (click)="borrarProducto(p)" class="btn btn-danger" type="button"><i class="fas fa-trash-alt"></i> Borrar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col text-end">
+            <button (click)="limpiarProducto()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProducto" type="button">
+              <i class="fas fa-plus-circle"></i> Agregar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <!-- Modal -->
+  <div class="modal fade" id="modalProducto" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-store"></i> Producto</h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+        </div>
+        <div class="modal-body">
+
+          <form class="needs-validation" novalidate>
+            <div class="form-group">
+              <label for="clave"><i class="fas fa-qrcode"></i> Codigo de barra</label>
+              <input [(ngModel)]="producto.clave" name="clave" class="form-control" type="text" required />
+              <div class="valid-tooltip">clave es obligatorio</div>
+            </div>
+
+            <div class="form-group">
+              <label for="nombre">Nombre</label>
+              <input [(ngModel)]="producto.nombre" name="nombre" class="form-control" type="text" required />
+              <div class="valid-tooltip">Nombre es obligatorio</div>
+            </div>
+
+            <div class="form-group">
+              <label for="precio">Precio</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input [(ngModel)]="producto.precio" name="precio" class="form-control" type="number" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="precio">Precio Lista</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input [(ngModel)]="producto.precioLista" name="precio" class="form-control" type="number" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="stock">Stock</label>
+              <input [(ngModel)]="producto.stock" name="stock" class="form-control" type="number" required />
+              <div class="valid-tooltip">stock es obligatorio</div>
+            </div>
+
+            <div class="form-group">
+              <label for="descripcion">Descripcion</label>
+              <input [(ngModel)]="producto.descripcion" name="descripcion" class="form-control" type="text" />
+              <div class="valid-tooltip">Descripcion es obligatorio</div>
+            </div>
+
+            <div class="form-group">
+              <label for="categoria">Categoria</label>
+              <select [(ngModel)]="producto.idCategoria" class="form-control" name="categoria" required>
+                <option selected disabled value="">Choose Option...</option>
+                <option *ngFor="let c of categorias" value="{{c.id}}" text="{{c.nombre}}"></option>
+              </select>
+            </div>
+          </form>
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+          <button (click)="guardarProducto()" class="btn btn-primary" data-bs-dismiss="modal" type="button"><i class="fas fa-save"></i> Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

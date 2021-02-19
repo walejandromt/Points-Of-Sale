@@ -1,0 +1,81 @@
+<div class="container p-3">
+
+<div class="card">
+  <div class="card-header bg-dark text-white">
+    <i class="fas fa-puzzle-piece"></i> Categorias
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Lista de categorias</h5>
+    <div class="card-body">
+    <table class="table caption-top table-hover">
+  <caption>Hoy</caption>
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Descripcion</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Accion</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of categorias">
+      <th scope="row">{{c.id}}</th>
+      <td>{{c.nombre}}</td>
+      <td>{{c.descripcion}}</td>
+      <td>{{c.creacion}}</td>
+      <td>
+        <button (click)="setCategoria(c)" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#categoriaNueva" type="button"><i class="fas fa-sliders-h"></i> Modificar</button>
+        <button (click)="borrarCategoria(c)" class="btn btn-danger" type="button"><i class="fas fa-trash-alt"></i> Borrar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="row">
+  <div class="col text-end">
+      <button (click)="limpiarCategoria()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoriaNueva" type="button">
+        <i class="fas fa-plus-circle"></i> Agregar
+      </button>
+  </div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="categoriaNueva" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-puzzle-piece"></i> Agregar nueva categoria</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+      </div>
+      <div class="modal-body">
+
+        <form class="needs-validation" novalidate>
+            <div class="form-group">
+                <label for="inputUsername">Nombre</label>
+                <input [(ngModel)]="categoria.nombre" name="nombre" class="form-control" type="text" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="inputEmail">Descripcion</label>
+                <input [(ngModel)]="categoria.descripcion" name="descripcion" class="form-control" type="text" required/>
+            </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+        <button (click)="guardarCategoria()" class="btn btn-primary" data-bs-dismiss="modal" type="button"><i class="fas fa-save"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

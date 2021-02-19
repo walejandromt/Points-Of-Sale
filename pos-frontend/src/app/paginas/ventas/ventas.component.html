@@ -1,0 +1,133 @@
+<div class="container p-3">
+
+  <div class="card">
+    <div class="card-header bg-dark text-white">
+      <i class="fas fa-cash-register"></i> Ventas
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Lista de ventas</h5>
+      <div class="card-body">
+        <table class="table caption-top table-hover">
+          <caption>Hoy</caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Clave</th>
+              <th scope="col">Total</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Hora</th>
+              <th scope="col">Accion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let v of ventas">
+              <th scope="row">{{v.id}}</th>
+              <td>{{v.clave}}</td>
+              <td>{{v.total}}</td>
+              <td>{{v.tipo}}</td>
+              <td>{{v.registro}}</td>
+              <td>{{v.creacion}}</td>
+              <td>
+                <button (click)="obtenerDetallesVentas(v)" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#ventaDetalles" type="button"><i class="fas fa-eye"></i> Ver ventas</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <!-- Modal Detalles -->
+  <div class="modal fade" id="ventaDetalles" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-history"></i> Detalles de venta</h5>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+        </div>
+        <div class="modal-body">
+
+          <table class="table caption-top table-hover">
+            <caption>Hoy</caption>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Clave</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Accion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let v of ventasDetalle">
+                <th scope="row">{{v.id}}</th>
+                <td>{{v.clave}}</td>
+                <td>{{v.producto.nombre}}</td>
+                <td>{{v.cantidad}}</td>
+                <td>{{v.creacion}}</td>
+                <td>
+                  <button (click)="setProducto(v)" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#ventaProductoDetalles" type="button"><i class="fas fa-eye"></i> Ver</button>
+                </td>
+              </tr>
+              <tr *ngFor="let v of ventasDetalleAdicional">
+                <th scope="row">{{v.id}}</th>
+                <td>{{v.clave}}</td>
+                <td>{{v.nombre}}</td>
+                <td>{{v.cantidad}}</td>
+                <td>{{v.creacion}}</td>
+                <td>
+                  <button (click)="setProductoAdicional(v)" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#ventaProductoDetalles" type="button"><i class="fas fa-eye"></i> Ver</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal Producto -->
+  <div class="modal fade" id="ventaProductoDetalles" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-tags"></i> Detalles de producto</h5>
+          <button (click)="limpiarProducto()" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" type="button"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <!--img src="..." alt="..."-->
+                <svg class="bd-placeholder-img" width="100%" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image</text></svg>
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{producto.nombre}}</h5>
+                  <p class="card-subtitle"><span class="fw-bold">Precio:</span> ${{producto.precio}}</p>
+                  <p class="card-subtitle" [ngClass]="{'text-danger': producto.stock <= 5}"><span class="fw-bold">Almacen:</span> {{producto.stock}}</p>
+                  <p class="card-text">{{producto.descripcion}}</p>
+                </div>
+                <div class="modal-footer">
+                  <button (click)="limpiarProducto()" class="btn btn-secondary" data-bs-dismiss="modal" type="button"><i class="fas fa-times"></i> Cerrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
